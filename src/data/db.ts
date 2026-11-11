@@ -216,13 +216,13 @@ const SKILLS: Skill[] = [
   // ── Frontend ──
   {
     id: 's1',
-    name: 'HTML',
+    name: 'HTML5',
     icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg',
     category: 'Frontend Development',
   },
   {
     id: 's2',
-    name: 'CSS',
+    name: 'CSS3',
     icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg',
     category: 'Frontend Development',
   },
@@ -287,6 +287,12 @@ const SKILLS: Skill[] = [
     icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/csharp/csharp-original.svg',
     category: 'Backend Development',
   },
+  {
+    id: 's12b',
+    name: 'C++',
+    icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cplusplus/cplusplus-original.svg',
+    category: 'Backend Development',
+  },
   // ── Database & Infra ──
   {
     id: 's13',
@@ -313,6 +319,12 @@ const SKILLS: Skill[] = [
     category: 'Database & Infra',
   },
   {
+    id: 's16b',
+    name: 'SQLite',
+    icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/sqlite/sqlite-original.svg',
+    category: 'Database & Infra',
+  },
+  {
     id: 's17',
     name: 'Docker',
     icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg',
@@ -325,6 +337,12 @@ const SKILLS: Skill[] = [
     category: 'Database & Infra',
   },
   // ── AI & Automation ──
+  {
+    id: 's19e',
+    name: 'ChatGPT',
+    icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/openai/openai-original.svg',
+    category: 'AI Tools & Automation',
+  },
   {
     id: 's19a',
     name: 'Claude',

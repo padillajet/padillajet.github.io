@@ -7,53 +7,28 @@ import type { Project, Certificate, Skill } from '../data/db'
 
 function Portfolio() {
   const [menuOpen, setMenuOpen] = useState(false)
-  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'dark')
+  const [theme, setTheme] = useState(() => {
+    if (!localStorage.getItem('portfolio_theme_set')) {
+      localStorage.setItem('portfolio_theme_set', 'true')
+      localStorage.setItem('theme', 'light')
+      return 'light'
+    }
+    return localStorage.getItem('theme') || 'light'
+  })
   const [certIndex] = useState(0)
   const [isFading, setIsFading] = useState(false)
-  const [localTime, setLocalTime] = useState('')
-  const [activeSection, setActiveSection] = useState('services')
   const navigate = useNavigate()
 
   const [projects, setProjects] = useState<Project[]>([])
-  const [allProjectsCount, setAllProjectsCount] = useState(0)
   const [certs, setCerts] = useState<Certificate[]>([])
   const [skills, setSkills] = useState<Skill[]>([])
   const [selectedProject, setSelectedProject] = useState<Project | null>(null)
   const [copied, setCopied] = useState(false)
 
-
-  // Live local time
-  useEffect(() => {
-    const updateTime = () => {
-      setLocalTime(new Date().toLocaleTimeString('en-US', {
-        hour: '2-digit', minute: '2-digit', hour12: true, timeZone: 'Asia/Manila',
-      }))
-    }
-    updateTime()
-    const timer = setInterval(updateTime, 30000)
-    return () => clearInterval(timer)
-  }, [])
-
-  // Active section tracking
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) setActiveSection(entry.target.id)
-        })
-      },
-      { rootMargin: '-40% 0px -40% 0px', threshold: 0 }
-    )
-    const sections = document.querySelectorAll('section[id]')
-    sections.forEach(s => observer.observe(s))
-    return () => observer.disconnect()
-  }, [])
-
   useEffect(() => {
     const fetchData = async () => {
       const [allP, c, s] = await Promise.all([db.getProjects(), db.getCerts(), db.getSkills()])
       setProjects(allP.filter(p => p.pinned))
-      setAllProjectsCount(allP.length)
       setCerts(c)
       setSkills(s)
     }
@@ -90,26 +65,12 @@ function Portfolio() {
 
   const toggleTheme = () => setTheme(prev => prev === 'dark' ? 'light' : 'dark')
 
-  const scrollTo = (id: string) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
-    setMenuOpen(false)
-  }
-
-  const navSections = [
-    { id: 'services', label: 'About' },
-    { id: 'projects', label: 'Projects' },
-    { id: 'experience', label: 'Experience' },
-    { id: 'skills', label: 'Stack' },
-    { id: 'certifications', label: 'Certifications' },
-  ]
-
-
-  const skillCategories = [
-    { title: 'Frontend Development', desc: 'Responsive, accessible UIs focused on performance.', keywords: ['frontend', 'ui', 'ux', 'javascript', 'react', 'html', 'css', 'tailwind', 'typescript', 'nextjs', 'figma'] },
-    { title: 'Backend Development', desc: 'API design and server-side logic with clean architecture.', keywords: ['backend', 'node', 'python', 'api', 'express', 'auth', 'java', 'c#', 'php'] },
-    { title: 'Database & Infra', desc: 'Schema design, query optimization, and cloud deployment.', keywords: ['database', 'infra', 'sql', 'mysql', 'postgres', 'docker', 'aws', 'deploy', 'supabase', 'mongodb', 'firebase', 'vercel', 'sqlite'] },
-    { title: 'AI Tools & Automation', desc: 'Integrating intelligent models and automated agents.', keywords: ['ai', 'artificial intelligence', 'ml', 'machine learning', 'openai', 'gemini', 'claude', 'langchain', 'n8n', 'automation', 'agent', 'bot', 'llm', 'nlp'] },
-    { title: 'Tools & Others', desc: 'Essential development utilities for various workflows.', keywords: ['git', 'github', 'cloudinary', 'tiled', 'unity', 'photoshop', 'illustrator', 'premiere', 'slack', 'notion'] },
+  const stackCategories = [
+    { title: 'Frontend', categoryKey: 'Frontend Development' },
+    { title: 'Backend', categoryKey: 'Backend Development' },
+    { title: 'Databases & Infrastructure', categoryKey: 'Database & Infra' },
+    { title: 'AI Tools & Automation', categoryKey: 'AI Tools & Automation' },
+    { title: 'Tools & Workflows', categoryKey: 'Tools & Others' },
   ]
 
   return (
@@ -148,23 +109,12 @@ function Portfolio() {
           </a>
           <a href="/projects" onClick={(e) => { e.preventDefault(); navigate('/projects') }} className="lnav-link">
             <svg viewBox="0 0 24 24" fill="currentColor" width="15" height="15"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z" /></svg>
-            All Projects
+            Projects
           </a>
-        </div>
-
-        <div className="lnav-divider" />
-
-        {/* Section Navigation */}
-        <div className="lnav-group">
-          {navSections.map(s => (
-            <button
-              key={s.id}
-              className={`lnav-section-link ${activeSection === s.id ? 'lnav-active' : ''}`}
-              onClick={() => scrollTo(s.id)}
-            >
-              {s.label}
-            </button>
-          ))}
+          <a href="/gear" onClick={(e) => { e.preventDefault(); navigate('/gear') }} className="lnav-link">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="15" height="15"><path d="M12 15.5A3.5 3.5 0 0 1 8.5 12 3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5 3.5 3.5 0 0 1-3.5 3.5m7.43-2.92c.04-.34.07-.69.07-1.08s-.03-.73-.07-1.08l2.32-1.82c.21-.16.27-.46.13-.7l-2.2-3.81c-.13-.23-.43-.31-.67-.23l-2.73 1.1c-.57-.44-1.18-.8-1.86-1.07l-.42-2.9A.55.55 0 0 0 14 2h-4c-.27 0-.5.19-.54.45l-.42 2.9c-.68.27-1.3.63-1.86 1.07L4.46 5.32c-.24-.09-.54 0-.67.23L1.6 9.36c-.14.24-.08.54.13.7l2.32 1.82c-.04.35-.07.7-.07 1.08s.03.73.07 1.08L1.73 15.86c-.21.16-.27.46-.13.7l2.2 3.81c.13.23.43.31.67.23l2.73-1.1c.57.44 1.18.8 1.86 1.07l.42 2.9c.04.26.27.45.54.45h4c.27 0 .5-.19.54-.45l.42-2.9c.68-.27 1.3-.63 1.86-1.07l2.73 1.1c.24.09.54 0 .67-.23l2.2-3.81c.14-.24.08-.54-.13-.7l-2.32-1.82z" /></svg>
+            Gear
+          </a>
         </div>
 
         {/* Spacer */}
@@ -209,104 +159,223 @@ function Portfolio() {
       <div className="main-content-wrapper">
         <main className="main-content-area">
 
-          {/* PROFILE HEADER */}
-          <div className="profile-header-card">
-            <div className="profile-left">
-              <div className="profile-photo-container">
-                <img src="/images/Untitled.png" alt="Jet Padilla" className="profile-photo-upwork" />
-                <span className="profile-online-dot" title="Available" />
-              </div>
-              <div className="profile-identity">
-                <h1 className="profile-name">
-                  Jet <span className="profile-lastname">Padilla</span>
-                </h1>
-                <p className="profile-role-text">Software Developer & Digital Builder | React, UI/UX, AI Automation & Web Apps</p>
-                <p className="profile-location-text">
-                  <svg viewBox="0 0 24 24" fill="currentColor" width="13" height="13" style={{ verticalAlign: 'middle', marginRight: '4px' }}><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" /></svg>
-                  Bulacan, Philippines{localTime ? ` · ${localTime} local time` : ''}
-                </p>
+          { }
+          <div id="services" className="hero-split">
+            {/* Dot grid top-right ambient decoration */}
+            <div className="hero-dot-grid" aria-hidden="true" />
+
+            {/* Left: photo */}
+            <div className="hero-photo-col">
+              <div className="hero-photo-wrap">
+                <img src="/images/Untitled.png" alt="Jet Padilla" className="hero-photo" />
               </div>
             </div>
 
+            {/* Right: text */}
+            <div className="hero-text-col">
+              <h1 className="hero-name">Jet Padilla</h1>
+
+              <p className="hero-bio">
+                Fresh Computer Science graduate targeting a{' '}
+                <span className="hero-pill">
+                  <span className="hero-pill-code-icon">&lt;/&gt;</span>
+                  <span>Junior Software Developer</span>
+                </span>{' '}
+                role. Experienced in{' '}
+                <span className="hero-pill">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="13" height="13">
+                    <rect x="2" y="3" width="20" height="14" rx="2" />
+                    <line x1="8" y1="21" x2="16" y2="21" />
+                    <line x1="12" y1="17" x2="12" y2="21" />
+                  </svg>
+                  <span>web development</span>
+                </span>
+                ,{' '}
+                <span className="hero-pill">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="13" height="13">
+                    <rect x="5" y="2" width="14" height="20" rx="2" />
+                    <line x1="12" y1="18" x2="12.01" y2="18" />
+                  </svg>
+                  <span>mobile apps</span>
+                </span>
+                , and{' '}
+                <span className="hero-pill">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="13" height="13">
+                    <circle cx="12" cy="12" r="3" />
+                    <path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83" />
+                  </svg>
+                  <span>UI/UX design</span>
+                </span>
+                .
+              </p>
+
+              <p className="hero-bio">
+                Proficient in{' '}
+                <span className="hero-pill">
+                  <span>⚡ React &amp; Python</span>
+                </span>
+                , REST APIs, and{' '}
+                <span className="hero-pill hero-pill-ai">
+                  <span className="hero-pill-icons">
+                    <svg viewBox="0 0 24 24" fill="currentColor" width="12" height="12">
+                      <path d="m12 2 2.6 6.4L21 11l-6.4 2.6L12 20l-2.6-6.4L3 11l6.4-2.6z" />
+                    </svg>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" width="12" height="12">
+                      <line x1="12" y1="2" x2="12" y2="22" />
+                      <line x1="2" y1="12" x2="22" y2="12" />
+                      <line x1="4.93" y1="4.93" x2="19.07" y2="19.07" />
+                      <line x1="19.07" y1="4.93" x2="4.93" y2="19.07" />
+                    </svg>
+                  </span>
+                  <span>AI-assisted tools</span>
+                </span>
+                . Proven ability to lead teams, ship{' '}
+                <span className="hero-pill">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="13" height="13">
+                    <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z" />
+                    <path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z" />
+                    <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0" />
+                    <path d="M12 9v5s3.03-.55 4-2c1.08-1.62 0-5 0-5" />
+                  </svg>
+                  <span>production apps</span>
+                </span>
+                , and deliver clean, user-friendly interfaces with a focus on performance and accessibility.
+              </p>
+
+              {/* AI Tools In My Workflow */}
+              <div className="hero-ai-tools-section">
+                <div className="hero-ai-tools-label">AI TOOLS IN MY WORKFLOW</div>
+                <div className="hero-ai-tools-row">
+                  {/* ChatGPT (OpenAI official vector logo) */}
+                  <span className="hero-ai-tool-pill">
+                    <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
+                      <path d="M22.28 9.82a6 6 0 0 0-.52-4.91 6.05 6.05 0 0 0-6.5-2.9A6.06 6.06 0 0 0 4.98 4.18a6 6 0 0 0-4 2.9 6.05 6.05 0 0 0 .74 7.1 6 6 0 0 0 .51 4.91 6.05 6.05 0 0 0 6.51 2.9A6 6 0 0 0 13.26 24a6.06 6.06 0 0 0 5.77-4.2 6 6 0 0 0 4-2.9 6.05 6.05 0 0 0-.75-7.08zm-9.02 12.6a4.48 4.48 0 0 1-2.88-1.04l.14-.08 4.78-2.76a.8.8 0 0 0 .4-.68v-6.74l2.02 1.17a.07.07 0 0 1 .04.05v5.58a4.5 4.5 0 0 1-4.5 4.5zm-9.66-4.13a4.47 4.47 0 0 1-.53-3.01l.14.08 4.78 2.76a.77.77 0 0 0 .78 0l5.85-3.37v2.33a.08.08 0 0 1-.03.06L9.74 19.95a4.5 4.5 0 0 1-6.14-1.65zM2.34 7.9a4.48 4.48 0 0 1 2.37-1.98v5.69a.77.77 0 0 0 .38.67l5.82 3.36-2.02 1.17a.08.08 0 0 1-.07 0l-4.83-2.79A4.5 4.5 0 0 1 2.34 7.87zm16.6 3.85L13.1 8.36l2.02-1.16a.08.08 0 0 1 .07 0l4.83 2.79a4.5 4.5 0 0 1-.68 8.1v-5.67a.8.8 0 0 0-.4-.67zm2.01-3.02l-.14-.08-4.77-2.79a.78.78 0 0 0-.79 0L9.41 9.23V6.9a.07.07 0 0 1 .03-.06l4.83-2.79a4.5 4.5 0 0 1 6.68 4.66zM8.31 12.86l-2.02-1.16a.08.08 0 0 1-.04-.06V6.07a4.5 4.5 0 0 1 7.38-3.45l-.14.08-4.79 2.76a.8.8 0 0 0-.4.68zm1.1-2.37l2.6-1.5 2.6 1.5v3l-2.6 1.5-2.6-1.5z" />
+                    </svg>
+                    <span>ChatGPT</span>
+                  </span>
+
+                  {/* Claude (Anthropic sunburst) */}
+                  <span className="hero-ai-tool-pill">
+                    <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
+                      <path d="M10.8 2h2.4v6.8l4.8-4.8 1.7 1.7-4.8 4.8H21.7v2.4h-6.8l4.8 4.8-1.7 1.7-4.8-4.8V22h-2.4v-6.8l-4.8 4.8-1.7-1.7 4.8-4.8H2.3v-2.4h6.8l-4.8-4.8 1.7-1.7 4.8 4.8z" />
+                    </svg>
+                    <span>Claude</span>
+                  </span>
+
+                  {/* Antigravity (Google Antigravity orbital planet symbol) */}
+                  <span className="hero-ai-tool-pill">
+                    <img
+                      src="https://res.cloudinary.com/dwutjobga/image/upload/v1775528511/portfolio_upload/hv0geodktoe8sk37hyfi.png"
+                      alt="Antigravity"
+                      className="hero-ai-tool-img"
+                      onError={(e) => {
+                        (e.target as HTMLElement).style.display = 'none';
+                        const svg = (e.target as HTMLElement).nextElementSibling as HTMLElement;
+                        if (svg) svg.style.display = 'inline-block';
+                      }}
+                    />
+                    <svg
+                      className="hero-ai-tool-fallback-svg"
+                      style={{ display: 'none' }}
+                      viewBox="0 0 24 24"
+                      width="16"
+                      height="16"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <ellipse cx="12" cy="12" rx="10" ry="4.5" transform="rotate(-28 12 12)" />
+                      <circle cx="12" cy="12" r="4.2" fill="currentColor" />
+                    </svg>
+                    <span>Antigravity</span>
+                  </span>
+
+                  {/* Grok (xAI slashed circle) */}
+                  <span className="hero-ai-tool-pill">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" width="16" height="16">
+                      <circle cx="12" cy="12" r="9" />
+                      <line x1="6.5" y1="17.5" x2="17.5" y2="6.5" />
+                    </svg>
+                    <span>Grok</span>
+                  </span>
+
+                  {/* Gemini (Google 4-point star) */}
+                  <span className="hero-ai-tool-pill">
+                    <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16">
+                      <path d="M12 24c-.4 0-.8-.3-.9-.7C9.6 15.6 8.4 14.4.7 12.9c-.4-.1-.7-.5-.7-.9s.3-.8.7-.9C8.4 9.6 9.6 8.4 11.1.7c.1-.4.5-.7.9-.7s.8.3.9.7c1.5 7.7 2.7 8.9 10.4 10.4.4.1.7.5.7.9s-.3.8-.7.9c-7.7 1.5-8.9 2.7-10.4 10.4-.1.4-.5.7-.9.7z" />
+                    </svg>
+                    <span>Gemini</span>
+                  </span>
+                </div>
+              </div>
+
+              {/* My Process */}
+              <div className="hero-process-section">
+                <div className="hero-ai-tools-label">MY PROCESS</div>
+                <div className="hero-process-grid">
+                  <div className="hero-process-card">
+                    <div className="hero-process-header">
+                      <span className="hero-process-num">01</span>
+                      <span className="hero-process-title">Explore</span>
+                    </div>
+                    <p className="hero-process-desc">Understand project objectives &amp; user needs.</p>
+                  </div>
+                  <div className="hero-process-card">
+                    <div className="hero-process-header">
+                      <span className="hero-process-num">02</span>
+                      <span className="hero-process-title">Plan</span>
+                    </div>
+                    <p className="hero-process-desc">Outline architecture, framework &amp; user journey.</p>
+                  </div>
+                  <div className="hero-process-card">
+                    <div className="hero-process-header">
+                      <span className="hero-process-num">03</span>
+                      <span className="hero-process-title">Build</span>
+                    </div>
+                    <p className="hero-process-desc">Transform design into clean, scalable code.</p>
+                  </div>
+                  <div className="hero-process-card">
+                    <div className="hero-process-header">
+                      <span className="hero-process-num">04</span>
+                      <span className="hero-process-title">Launch</span>
+                    </div>
+                    <p className="hero-process-desc">Go live, optimize performance &amp; iterate.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
-          {/* ABOUT */}
-          <section id="services" className="content-section">
-            <h2 className="content-section-title">About</h2>
-            <p className="about-bio-text">
-              Fresh Computer Science graduate targeting a Junior Software Developer role. Experienced in full-stack web development, mobile app development, and UI/UX design. Proficient in React, JavaScript, Python, REST APIs, and AI-assisted development tools. Proven ability to lead teams, ship production-ready applications, and deliver clean, user-friendly interfaces with a focus on performance and accessibility.
-            </p>
-            <div className="about-services-grid">
-              <div className="about-service-item">
-                <span className="about-service-icon">
-                  <svg viewBox="0 0 24 24" fill="none" width="20" height="20" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/>
-                  </svg>
-                </span>
-                <div>
-                  <h4>UI/UX Design</h4>
-                  <p>Crafting clean, intuitive interfaces from Figma prototypes to polished, accessible code.</p>
-                </div>
-              </div>
-              <div className="about-service-item">
-                <span className="about-service-icon">
-                  <svg viewBox="0 0 24 24" fill="none" width="20" height="20" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
-                  </svg>
-                </span>
-                <div>
-                  <h4>Web Development</h4>
-                  <p>Building responsive, performant web apps with React, TypeScript, Node.js and more.</p>
-                </div>
-              </div>
-              <div className="about-service-item">
-                <span className="about-service-icon">
-                  <svg viewBox="0 0 24 24" fill="none" width="20" height="20" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/>
-                  </svg>
-                </span>
-                <div>
-                  <h4>Mobile Apps</h4>
-                  <p>Cross-platform mobile development with Flutter and React Native (Expo).</p>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* PORTFOLIO */}
+          {/* PROJECTS */}
           <section id="projects" className="content-section">
-            <div className="content-section-header-row">
-              <h2 className="content-section-title">Projects</h2>
-              {allProjectsCount > 9 && (
-                <button className="btn-ghost view-all-btn" onClick={() => navigate('/projects')}>View All</button>
-              )}
-            </div>
-            <div className="upwork-portfolio-grid">
+            <h2 className="content-section-title">Projects</h2>
+
+            <div className="projects-showcase-grid">
               {projects.length === 0 ? (
                 <p style={{ opacity: 0.6 }}>No projects yet.</p>
-              ) : projects.map((p) => {
-                const inner = (
-                  <div className="upwork-portfolio-item-inner">
-                    <div className="upwork-thumbnail">
-                      <img src={p.image_url || '/images/default_logo.png'} alt="" className="upwork-main-img" />
-                      <div className={`upwork-status-badge status-${p.status}`}>
-                        {p.status.charAt(0).toUpperCase() + p.status.slice(1)}
-                      </div>
-                    </div>
-                    <p className="upwork-thumbnail-title">{p.title}</p>
-                    <p className="upwork-thumbnail-year">{p.year}</p>
-                  </div>
-                )
-                return (
+              ) : (
+                projects.map((p) => (
                   <div
                     key={p.id}
-                    className="upwork-portfolio-item"
+                    className="project-showcase-card"
                     onClick={() => setSelectedProject(p)}
                   >
-                    {inner}
+                    <div className="project-showcase-thumb">
+                      <img
+                        src={p.image_url || '/images/default_logo.png'}
+                        alt={p.title}
+                        className="project-showcase-img"
+                      />
+                    </div>
+                    <div className="project-showcase-body">
+                      <h3 className="project-showcase-title">{p.title}</h3>
+                      <p className="project-showcase-desc">{p.desc_text}</p>
+                    </div>
                   </div>
-                )
-              })}
+                ))
+              )}
             </div>
           </section>
 
@@ -339,33 +408,78 @@ function Portfolio() {
           </section>
 
 
-          {/* SKILLS */}
+          {/* TECH STACK */}
           <section id="skills" className="content-section">
-            <h2 className="content-section-title">Stack</h2>
-            <div className="skills-categories-grid">
-              {skillCategories.map((cat, idx) => {
-                const matchedSkills = skills.filter(s => {
-                  if (s.category && s.category.toLowerCase() === cat.title.toLowerCase()) return true
-                  return cat.keywords.some(kw => {
-                    const name = s.name?.toLowerCase() || ''
-                    const category = s.category?.toLowerCase() || ''
-                    if (kw.length <= 2) { const regex = new RegExp(`\\b${kw}\\b`, 'i'); return regex.test(name) || regex.test(category) }
-                    return name.includes(kw) || category.includes(kw)
-                  })
-                })
+            < h2 className="content-section-title" >Tech Stack</h2>
+            <p className="tech-stack-subtitle">
+              The tools, frameworks, and product patterns I use across frontend, backend, databases, cloud infrastructure, AI integrations, and design workflows.
+            </p>
+            <div className="tech-stack-container">
+              {stackCategories.map((cat) => {
+                const catSkills = skills.filter(
+                  (s) => s.category?.toLowerCase() === cat.categoryKey.toLowerCase()
+                )
+                if (catSkills.length === 0) return null
+
                 return (
-                  <div className="skill-category-card" key={idx}>
-                    <h3 className="category-title">{cat.title}</h3>
-                    <p className="category-desc">{cat.desc}</p>
-                    <div className="category-tags">
-                      {matchedSkills.length > 0 ? matchedSkills.map(s => (
-                        <span className="skill-tag" key={s.id}>
-                          <img src={s.icon?.startsWith('http') ? s.icon : `/images/${s.icon}.png`} alt={s.name} className="tag-icon" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }} />
-                          {s.name}
-                        </span>
-                      )) : cat.keywords.slice(0, 4).map(kw => (
-                        <span className="skill-tag" key={kw}>{kw.charAt(0).toUpperCase() + kw.slice(1)}</span>
-                      ))}
+                  <div className="tech-stack-group" key={cat.title}>
+                    <div className="tech-stack-label">{cat.title}</div>
+                    <div className="tech-stack-row">
+                      {catSkills.map((s) => {
+                        const isChatGPT = s.name.toLowerCase() === 'chatgpt'
+                        const isAntigravity = s.name.toLowerCase() === 'antigravity'
+                        const isInvertDark = ['next.js', 'github', 'unity', 'vercel', 'framer'].some(
+                          (k) => s.name.toLowerCase().includes(k)
+                        )
+
+                        return (
+                          <div className="tech-stack-pill" key={s.id || s.name}>
+                            {isChatGPT ? (
+                              <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16" className="tech-stack-icon tech-stack-svg">
+                                <path d="M22.28 9.82a6 6 0 0 0-.52-4.91 6.05 6.05 0 0 0-6.5-2.9A6.06 6.06 0 0 0 4.98 4.18a6 6 0 0 0-4 2.9 6.05 6.05 0 0 0 .74 7.1 6 6 0 0 0 .51 4.91 6.05 6.05 0 0 0 6.51 2.9A6 6 0 0 0 13.26 24a6.06 6.06 0 0 0 5.77-4.2 6 6 0 0 0 4-2.9 6.05 6.05 0 0 0-.75-7.08zm-9.02 12.6a4.48 4.48 0 0 1-2.88-1.04l.14-.08 4.78-2.76a.8.8 0 0 0 .4-.68v-6.74l2.02 1.17a.07.07 0 0 1 .04.05v5.58a4.5 4.5 0 0 1-4.5 4.5zm-9.66-4.13a4.47 4.47 0 0 1-.53-3.01l.14.08 4.78 2.76a.77.77 0 0 0 .78 0l5.85-3.37v2.33a.08.08 0 0 1-.03.06L9.74 19.95a4.5 4.5 0 0 1-6.14-1.65zM2.34 7.9a4.48 4.48 0 0 1 2.37-1.98v5.69a.77.77 0 0 0 .38.67l5.82 3.36-2.02 1.17a.08.08 0 0 1-.07 0l-4.83-2.79A4.5 4.5 0 0 1 2.34 7.87zm16.6 3.85L13.1 8.36l2.02-1.16a.08.08 0 0 1 .07 0l4.83 2.79a4.5 4.5 0 0 1-.68 8.1v-5.67a.8.8 0 0 0-.4-.67zm2.01-3.02l-.14-.08-4.77-2.79a.78.78 0 0 0-.79 0L9.41 9.23V6.9a.07.07 0 0 1 .03-.06l4.83-2.79a4.5 4.5 0 0 1 6.68 4.66zM8.31 12.86l-2.02-1.16a.08.08 0 0 1-.04-.06V6.07a4.5 4.5 0 0 1 7.38-3.45l-.14.08-4.79 2.76a.8.8 0 0 0-.4.68zm1.1-2.37l2.6-1.5 2.6 1.5v3l-2.6 1.5-2.6-1.5z" />
+                              </svg>
+                            ) : isAntigravity ? (
+                              <>
+                                <img
+                                  src={s.icon}
+                                  alt={s.name}
+                                  className="tech-stack-icon"
+                                  onError={(e) => {
+                                    (e.target as HTMLElement).style.display = 'none'
+                                    const svg = (e.target as HTMLElement).nextElementSibling as HTMLElement
+                                    if (svg) svg.style.display = 'inline-block'
+                                  }}
+                                />
+                                <svg
+                                  className="tech-stack-icon tech-stack-svg"
+                                  style={{ display: 'none' }}
+                                  viewBox="0 0 24 24"
+                                  width="16"
+                                  height="16"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  strokeWidth="2"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                >
+                                  <ellipse cx="12" cy="12" rx="10" ry="4.5" transform="rotate(-28 12 12)" />
+                                  <circle cx="12" cy="12" r="4.2" fill="currentColor" />
+                                </svg>
+                              </>
+                            ) : s.icon ? (
+                              <img
+                                src={s.icon.startsWith('http') ? s.icon : `/images/${s.icon}.png`}
+                                alt={s.name}
+                                className={`tech-stack-icon ${isInvertDark ? 'tech-stack-invert-dark' : ''}`}
+                                onError={(e) => {
+                                  (e.target as HTMLElement).style.display = 'none'
+                                }}
+                              />
+                            ) : null}
+                            <span className="tech-stack-name">{s.name}</span>
+                          </div>
+                        )
+                      })}
                     </div>
                   </div>
                 )
@@ -398,9 +512,9 @@ function Portfolio() {
                               ) : (
                                 <span className="cert-card-icon-fallback">
                                   <svg viewBox="0 0 48 48" fill="none" width="44" height="44" xmlns="http://www.w3.org/2000/svg">
-                                    <circle cx="24" cy="20" r="12" stroke="currentColor" strokeWidth="2.5" fill="none" opacity="0.85"/>
-                                    <polyline points="17,30 14,44 24,39 34,44 31,30" stroke="currentColor" strokeWidth="2.5" strokeLinejoin="round" fill="none" opacity="0.85"/>
-                                    <circle cx="24" cy="20" r="6" stroke="currentColor" strokeWidth="2" fill="none" opacity="0.5"/>
+                                    <circle cx="24" cy="20" r="12" stroke="currentColor" strokeWidth="2.5" fill="none" opacity="0.85" />
+                                    <polyline points="17,30 14,44 24,39 34,44 31,30" stroke="currentColor" strokeWidth="2.5" strokeLinejoin="round" fill="none" opacity="0.85" />
+                                    <circle cx="24" cy="20" r="6" stroke="currentColor" strokeWidth="2" fill="none" opacity="0.5" />
                                   </svg>
                                 </span>
                               )}
@@ -434,27 +548,6 @@ function Portfolio() {
               })()
             )}
           </section>
-
-
-          {/* MY PROCESS */}
-          <section className="content-section">
-            <h2 className="content-section-title">My Process</h2>
-            <div className="workflow-container">
-              {[
-                { icon: '/images/explore.png', num: '1', title: 'Explore', desc: "We begin by understanding your project's objectives and specific needs." },
-                { icon: '/images/plan.png', num: '2', title: 'Plan', desc: "I outline the app's framework and user journey to build a strong base." },
-                { icon: '/images/build.png', num: '3', title: 'Build', desc: 'The design is transformed into functional, clean, and scalable code.' },
-                { icon: '/images/launch.png', num: '4', title: 'Launch', desc: 'Your project goes live, ready to reach and engage its audience.' },
-              ].map((w) => (
-                <div className="workflow-step" key={w.title}>
-                  <div className="step-number">{w.num}</div>
-                  <div className="step-icon"><img src={w.icon} alt={w.title} className="workflow-icon-img" /></div>
-                  <h3>{w.title}</h3>
-                  <p>{w.desc}</p>
-                </div>
-              ))}
-            </div>
-          </section>
         </main>
       </div>
 
@@ -462,7 +555,7 @@ function Portfolio() {
       {selectedProject && (
         <div className="upwork-modal-backdrop" onClick={() => setSelectedProject(null)}>
           <div className="upwork-modal-container" onClick={(e) => e.stopPropagation()}>
-            
+
             {/* Top Bar */}
             <div className="upwork-modal-header">
               <h2 className="upwork-modal-title">{selectedProject.title}</h2>
@@ -477,7 +570,7 @@ function Portfolio() {
                     }}
                   >
                     <span>{copied ? 'Copied!' : 'Copy link'}</span>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="14" height="14"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="14" height="14"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" /><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" /></svg>
                   </button>
                 )}
                 <button className="upwork-modal-close-btn" onClick={() => setSelectedProject(null)} aria-label="Close">
@@ -488,7 +581,7 @@ function Portfolio() {
 
             {/* Main 2-Column Section */}
             <div className="upwork-modal-body">
-              
+
               {/* Left Info Column */}
               <div className="upwork-modal-left">
                 <div className="upwork-modal-section">
