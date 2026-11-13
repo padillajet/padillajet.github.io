@@ -1,3 +1,4 @@
+import ProjectGallery from '../components/ProjectGallery'
 import MobileNavigation from '../components/MobileNavigation'
 
 import { useEffect, useRef, useState } from 'react'
@@ -142,7 +143,7 @@ function Portfolio() {
             <svg viewBox="0 0 24 24" fill="currentColor" width="15" height="15"><path d="M19 3a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h14m-.5 15.5v-5.3a3.26 3.26 0 00-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 011.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 001.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 00-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z" /></svg>
             LinkedIn
           </a>
-          <a href="https://drive.google.com/file/d/1o8zZvsyKBCiIu4I1LBLZrnk1nvZW9lv6/view?usp=sharing" target="_blank" rel="noreferrer" className="lnav-link">
+          <a href="https://drive.google.com/file/d/1e_cASutmJX4y0AWYwBJ4lsApeX260m7n/view?usp=sharing" target="_blank" rel="noreferrer" className="lnav-link">
             <svg viewBox="0 0 24 24" fill="currentColor" width="15" height="15"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM6 20V4h5v7h7v9H6z" /></svg>
             Resume
           </a>
@@ -622,25 +623,7 @@ function Portfolio() {
 
               {/* Right Preview Column — Horizontal Scroll Strip */}
               <div className="upwork-modal-right">
-                {(() => {
-                  const allImgs = [
-                    ...(selectedProject.image_url ? [selectedProject.image_url] : []),
-                    ...(selectedProject.images || []),
-                  ].filter(Boolean);
-                  const imgs = allImgs.length > 0 ? allImgs : ['/images/default_logo.png'];
-                  return (
-                    <div className="modal-img-scroll">
-                      {imgs.map((src, i) => (
-                        <img
-                          key={i}
-                          src={src}
-                          alt={`${selectedProject.title} screenshot ${i + 1}`}
-                          className="modal-img-scroll-item"
-                        />
-                      ))}
-                    </div>
-                  );
-                })()}
+                <ProjectGallery project={selectedProject} />
               </div>
 
             </div>
