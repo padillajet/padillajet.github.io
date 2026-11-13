@@ -1,11 +1,50 @@
+import MobileNavigation from '../components/MobileNavigation'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { PanelsTopLeft, Smartphone, PencilRuler, CodeXml } from 'lucide-react'
 import '../App.css'
 import { db } from '../data/db'
 import type { Project, Certificate, Skill } from '../data/db'
+import GitHubContributions from '../components/GitHubContributions'
 
 function Portfolio() {
+  const mainRef = useRef<HTMLElement>(null)
+
+  useEffect(() => {
+    const main = mainRef.current
+    if (!main || !('IntersectionObserver' in window)) return
+    const preference = window.matchMedia('(prefers-reduced-motion: reduce)')
+    if (preference.matches) return
+
+    const sections = main.querySelectorAll<HTMLElement>('.hero-services, .content-section')
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.remove('section-reveal-pending')
+          observer.unobserve(entry.target)
+        }
+      })
+    }, { threshold: 0.05 })
+
+    sections.forEach(section => {
+      section.classList.add('section-reveal-pending')
+      observer.observe(section)
+    })
+    const revealAll = () => {
+      if (preference.matches) {
+        sections.forEach(section => section.classList.remove('section-reveal-pending'))
+        observer.disconnect()
+      }
+    }
+    preference.addEventListener('change', revealAll)
+    return () => {
+      observer.disconnect()
+      preference.removeEventListener('change', revealAll)
+      sections.forEach(section => section.classList.remove('section-reveal-pending'))
+    }
+  }, [])
+
   const [menuOpen, setMenuOpen] = useState(false)
   const [theme, setTheme] = useState(() => {
     if (!localStorage.getItem('portfolio_theme_set')) {
@@ -95,7 +134,7 @@ function Portfolio() {
 
         {/* External Links */}
         <div className="lnav-group">
-          <a href="https://github.com/Nahiwagaan" target="_blank" rel="noreferrer" className="lnav-link">
+          <a href="https://github.com/padillajet" target="_blank" rel="noreferrer" className="lnav-link">
             <svg viewBox="0 0 24 24" fill="currentColor" width="15" height="15"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.868-.013-1.703-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836a9.59 9.59 0 012.504.337c1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.161 22 16.416 22 12c0-5.523-4.477-10-10-10z" /></svg>
             GitHub
           </a>
@@ -135,7 +174,7 @@ function Portfolio() {
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16"><path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1-8.313-12.454z" /></svg>
               )}
             </button>
-            <a href="https://github.com/Nahiwagaan" target="_blank" rel="noreferrer" className="lnav-control-btn" aria-label="GitHub">
+            <a href="https://github.com/padillajet" target="_blank" rel="noreferrer" className="lnav-control-btn" aria-label="GitHub">
               <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.868-.013-1.703-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836a9.59 9.59 0 012.504.337c1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.161 22 16.416 22 12c0-5.523-4.477-10-10-10z" /></svg>
             </a>
           </div>
@@ -145,19 +184,12 @@ function Portfolio() {
         </div>
       </aside>
 
-      {/* Mobile Hamburger */}
-      <button
-        className={`lnav-hamburger ${menuOpen ? 'lnav-hamburger-open' : ''}`}
-        onClick={() => setMenuOpen(!menuOpen)}
-        aria-label="Toggle menu"
-      >
-        <span /><span /><span />
-      </button>
+      <MobileNavigation menuOpen={menuOpen} onToggle={() => setMenuOpen(open => !open)} />
       {menuOpen && <div className="lnav-overlay" onClick={() => setMenuOpen(false)} />}
 
       {/* ── MAIN CONTENT WRAPPER ── */}
       <div className="main-content-wrapper">
-        <main className="main-content-area">
+        <main className="main-content-area portfolio-main" ref={mainRef}>
 
           { }
           <div id="services" className="hero-split">
@@ -167,7 +199,7 @@ function Portfolio() {
             {/* Left: photo */}
             <div className="hero-photo-col">
               <div className="hero-photo-wrap">
-                <img src="/images/Untitled.png" alt="Jet Padilla" className="hero-photo" />
+                <img src="/images/hero2.png" alt="Jet Padilla" className="hero-photo" />
               </div>
             </div>
 
@@ -311,42 +343,25 @@ function Portfolio() {
                 </div>
               </div>
 
-              {/* My Process */}
-              <div className="hero-process-section">
-                <div className="hero-ai-tools-label">MY PROCESS</div>
-                <div className="hero-process-grid">
-                  <div className="hero-process-card">
-                    <div className="hero-process-header">
-                      <span className="hero-process-num">01</span>
-                      <span className="hero-process-title">Explore</span>
-                    </div>
-                    <p className="hero-process-desc">Understand project objectives &amp; user needs.</p>
-                  </div>
-                  <div className="hero-process-card">
-                    <div className="hero-process-header">
-                      <span className="hero-process-num">02</span>
-                      <span className="hero-process-title">Plan</span>
-                    </div>
-                    <p className="hero-process-desc">Outline architecture, framework &amp; user journey.</p>
-                  </div>
-                  <div className="hero-process-card">
-                    <div className="hero-process-header">
-                      <span className="hero-process-num">03</span>
-                      <span className="hero-process-title">Build</span>
-                    </div>
-                    <p className="hero-process-desc">Transform design into clean, scalable code.</p>
-                  </div>
-                  <div className="hero-process-card">
-                    <div className="hero-process-header">
-                      <span className="hero-process-num">04</span>
-                      <span className="hero-process-title">Launch</span>
-                    </div>
-                    <p className="hero-process-desc">Go live, optimize performance &amp; iterate.</p>
-                  </div>
-                </div>
-              </div>
+
             </div>
           </div>
+
+          <section className="hero-services" aria-labelledby="process-heading">
+            <h2 id="process-heading" className="hero-ai-tools-label hero-services-heading">What I Do</h2>
+            {[
+              { title: 'UX & UI', description: 'Designing interfaces that are intuitive, efficient, and enjoyable to use.', icon: PanelsTopLeft },
+              { title: 'Web & Mobile App', description: 'Transforming ideas into exceptional web and mobile app experiences.', icon: Smartphone },
+              { title: 'Design & Creative', description: 'Crafting visually stunning designs that connect with your audience.', icon: PencilRuler },
+              { title: 'Development', description: 'Bringing your vision to life with the latest technology and design trends.', icon: CodeXml },
+            ].map(({ title, description, icon: Icon }) => (
+              <article className="hero-service" key={title}>
+                <Icon className="hero-service-icon" size={28} strokeWidth={1.3} aria-hidden="true" />
+                <h3>{title}</h3>
+                <p>{description}</p>
+              </article>
+            ))}
+          </section>
 
           {/* PROJECTS */}
           <section id="projects" className="content-section">
@@ -382,28 +397,19 @@ function Portfolio() {
           {/* EXPERIENCE */}
           <section id="experience" className="content-section">
             <h2 className="content-section-title">Experience</h2>
-            <div className="experience-grid">
-              <div className="experience-card">
-                <div className="experience-label">WORK EXPERIENCE</div>
-                <h3 className="experience-title">Web Developer / Head Marketing (OJT)</h3>
-                <p className="experience-details">Bulacan, Philippines | April 2025 - June 2025</p>
-                <ul className="experience-bullets">
-                  <li>Designed and developed dual-portal front-end for EASTS Enrollment System serving 30+ users, implementing student registration, class scheduling, and academic record tracking interfaces using Figma prototypes as design foundation.</li>
-                  <li>Delivered accessible, user-friendly web interfaces across administrator and student portals, applying UX principles to streamline course enrollment and profile management workflows for a 8-person cross-functional team.</li>
-                  <li>Supported digital marketing operations by managing social media scheduling, editing video content, and producing branded materials.</li>
-                </ul>
-              </div>
-              <div className="experience-card">
-                <div className="experience-label">THESIS PROJECT</div>
-                <h3 className="experience-title">Code Mania</h3>
-                <p className="experience-role">Role: Frontend Engineer / Project Lead</p>
-                <p className="experience-details">Interactive Learning Platform | September 2024 - June 2026</p>
-                <ul className="experience-bullets">
-                  <li>Led frontend development and UI/UX design as project lead for a gamified coding education platform supporting Python, JavaScript, and C++ challenges.</li>
-                  <li>Managed a 5-person team via GitHub Issues, assigning tickets and tracking tasks to deliver a fully responsive interface with progress tracking across administrator and student-facing features.</li>
-                  <li>Deployed to classmates and students as test users, incorporating feedback to refine UX and optimize the learning journey.</li>
-                </ul>
-              </div>
+            <div className="experience-list">
+              <article className="experience-entry">
+                <p className="experience-date">APRIL 2025 - JUNE 2025</p>
+                <h3 className="experience-entry-title">Web Developer / Head Marketing (OJT)</h3>
+                <p className="experience-organization">EASTS Enrollment System | Bulacan, Philippines</p>
+                <p className="experience-description">Designed and developed dual-portal front-end for EASTS Enrollment System serving 30+ users, implementing student registration, class scheduling, and academic record tracking interfaces using Figma prototypes as design foundation. Delivered accessible, user-friendly web interfaces across administrator and student portals, applying UX principles to streamline course enrollment and profile management workflows for a 8-person cross-functional team. Supported digital marketing operations by managing social media scheduling, editing video content, and producing branded materials.</p>
+              </article>
+              <article className="experience-entry">
+                <p className="experience-date">SEPTEMBER 2024 - JUNE 2026</p>
+                <h3 className="experience-entry-title">Frontend Engineer / Project Lead</h3>
+                <p className="experience-organization">Code Mania | Thesis Project</p>
+                <p className="experience-description">Led frontend development and UI/UX design as project lead for a gamified coding education platform supporting Python, JavaScript, and C++ challenges. Managed a 5-person team via GitHub Issues, assigning tickets and tracking tasks to deliver a fully responsive interface with progress tracking across administrator and student-facing features. Deployed to classmates and students as test users, incorporating feedback to refine UX and optimize the learning journey.</p>
+              </article>
             </div>
           </section>
 
@@ -548,6 +554,7 @@ function Portfolio() {
               })()
             )}
           </section>
+          <GitHubContributions />
         </main>
       </div>
 

@@ -1,6 +1,15 @@
+import MobileNavigation from '../components/MobileNavigation'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import '../App.css'
+
+const gearItems = [
+  { id: 'laptop', name: 'Acer Nitro V15', detail: 'Laptop', image: '/images/anv15.webp' },
+  { id: 'phone', name: 'Vivo Y35', detail: 'Phone', image: '/images/vivoy35.png' },
+  { id: 'keyboard', name: 'Redragon Lakshmi', detail: 'Keyboard', image: '/images/lakshmi.jpg' },
+  { id: 'mouse', name: 'Razer Cobra', detail: 'Mouse', image: '/images/mouse.webp' },
+  { id: 'earphone', name: 'Moondrop CHU', detail: 'Earphone', image: '/images/moondrop.webp' },
+]
 
 function Gear() {
   const [theme, setTheme] = useState(() => {
@@ -48,7 +57,7 @@ function Gear() {
 
         {/* All Links — one group, no divider */}
         <div className="lnav-group">
-          <a href="https://github.com/Nahiwagaan" target="_blank" rel="noreferrer" className="lnav-link">
+          <a href="https://github.com/padillajet" target="_blank" rel="noreferrer" className="lnav-link">
             <svg viewBox="0 0 24 24" fill="currentColor" width="15" height="15"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.868-.013-1.703-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836a9.59 9.59 0 012.504.337c1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.161 22 16.416 22 12c0-5.523-4.477-10-10-10z" /></svg>
             GitHub
           </a>
@@ -64,10 +73,10 @@ function Gear() {
             <svg viewBox="0 0 24 24" fill="currentColor" width="15" height="15"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z" /></svg>
             Projects
           </a>
-          <button className="lnav-section-link lnav-active" onClick={() => navigate('/gear')} aria-label="Gear">
+          <a href="/gear" className="lnav-link lnav-active" onClick={(e) => { e.preventDefault(); navigate('/gear') }} aria-current="page">
             <svg viewBox="0 0 24 24" fill="currentColor" width="15" height="15"><path d="M12 15.5A3.5 3.5 0 0 1 8.5 12 3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5 3.5 3.5 0 0 1-3.5 3.5m7.43-2.92c.04-.34.07-.69.07-1.08s-.03-.73-.07-1.08l2.32-1.82c.21-.16.27-.46.13-.7l-2.2-3.81c-.13-.23-.43-.31-.67-.23l-2.73 1.1c-.57-.44-1.18-.8-1.86-1.07l-.42-2.9A.55.55 0 0 0 14 2h-4c-.27 0-.5.19-.54.45l-.42 2.9c-.68.27-1.3.63-1.86 1.07L4.46 5.32c-.24-.09-.54 0-.67.23L1.6 9.36c-.14.24-.08.54.13.7l2.32 1.82c-.04.35-.07.7-.07 1.08s.03.73.07 1.08L1.73 15.86c-.21.16-.27.46-.13.7l2.2 3.81c.13.23.43.31.67.23l2.73-1.1c.57.44 1.18.8 1.86 1.07l.42 2.9c.04.26.27.45.54.45h4c.27 0 .5-.19.54-.45l.42-2.9c.68-.27 1.3-.63 1.86-1.07l2.73 1.1c.24.09.54 0 .67-.23l2.2-3.81c.14-.24.08-.54-.13-.7l-2.32-1.82z" /></svg>
             Gear
-          </button>
+          </a>
         </div>
 
         {/* Spacer */}
@@ -88,7 +97,7 @@ function Gear() {
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16"><path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1-8.313-12.454z" /></svg>
               )}
             </button>
-            <a href="https://github.com/Nahiwagaan" target="_blank" rel="noreferrer" className="lnav-control-btn" aria-label="GitHub">
+            <a href="https://github.com/padillajet" target="_blank" rel="noreferrer" className="lnav-control-btn" aria-label="GitHub">
               <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.868-.013-1.703-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836a9.59 9.59 0 012.504.337c1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.161 22 16.416 22 12c0-5.523-4.477-10-10-10z" /></svg>
             </a>
           </div>
@@ -98,14 +107,7 @@ function Gear() {
         </div>
       </aside>
 
-      {/* Mobile Hamburger */}
-      <button
-        className={`lnav-hamburger ${menuOpen ? 'lnav-hamburger-open' : ''}`}
-        onClick={() => setMenuOpen(!menuOpen)}
-        aria-label="Toggle menu"
-      >
-        <span /><span /><span />
-      </button>
+      <MobileNavigation menuOpen={menuOpen} onToggle={() => setMenuOpen(open => !open)} />
       {menuOpen && <div className="lnav-overlay" onClick={() => setMenuOpen(false)} />}
 
       {/* ── MAIN CONTENT ── */}
@@ -120,9 +122,18 @@ function Gear() {
             </p>
           </div>
 
-          {/* Placeholder content — fill in later */}
-          <div style={{ marginTop: '2rem', opacity: 0.5, fontFamily: "'Courier New', monospace", fontSize: '0.9rem' }}>
-            Coming soon — workspace, peripherals, software &amp; more.
+          <div className="gear-gallery">
+            {gearItems.map(({ id, name, detail, image }) => (
+              <article className="gear-item" key={id}>
+                <div className="gear-photo-frame">
+                  <img src={image} alt={name} className="gear-photo" loading="lazy" />
+                </div>
+                <div className="gear-caption">
+                  <h2>{name}</h2>
+                  <p>{detail}</p>
+                </div>
+              </article>
+            ))}
           </div>
 
         </main>
