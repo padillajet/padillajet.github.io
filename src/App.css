@@ -897,13 +897,18 @@ header.scrolled {
 
 @media (max-width: 768px) {
   .cert-cards-grid {
-    grid-template-columns: repeat(2, 1fr);
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    align-items: stretch;
   }
-}
 
-@media (max-width: 480px) {
-  .cert-cards-grid {
-    grid-template-columns: 1fr 1fr;
+  .cert-card {
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+    padding: 18px 10px 14px;
+    overflow-wrap: anywhere;
   }
 }
 
