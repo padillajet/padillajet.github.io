@@ -89,7 +89,7 @@ function Projects() {
         <div className="lnav-bottom">
           <div className="lnav-avail">
             <span className="lnav-avail-dot" />
-            <span>Open to Work</span>
+            <span>Currently Employed</span>
           </div>
 
           <div className="lnav-controls">
