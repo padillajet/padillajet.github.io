@@ -270,24 +270,6 @@ const SKILLS: Skill[] = [
     category: 'Backend Development',
   },
   {
-    id: 's10',
-    name: 'PHP',
-    icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/php/php-original.svg',
-    category: 'Backend Development',
-  },
-  {
-    id: 's11',
-    name: 'Java',
-    icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg',
-    category: 'Backend Development',
-  },
-  {
-    id: 's12',
-    name: 'C#',
-    icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/csharp/csharp-original.svg',
-    category: 'Backend Development',
-  },
-  {
     id: 's12b',
     name: 'C++',
     icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cplusplus/cplusplus-original.svg',
@@ -389,7 +371,7 @@ const SKILLS: Skill[] = [
   {
     id: 's23',
     name: 'Cloudinary',
-    icon: 'https://res.cloudinary.com/dwutjobga/image/upload/v1/portfolio_upload/cloudinary_icon.png',
+    icon: 'https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/cloudinary.svg',
     category: 'Tools & Others',
   },
 ];

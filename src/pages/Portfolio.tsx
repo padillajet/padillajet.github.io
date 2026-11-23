@@ -445,7 +445,7 @@ function Portfolio() {
                       {catSkills.map((s) => {
                         const isChatGPT = s.name.toLowerCase() === 'chatgpt'
                         const isAntigravity = s.name.toLowerCase() === 'antigravity'
-                        const isInvertDark = ['next.js', 'github', 'unity', 'vercel', 'framer'].some(
+                        const isInvertDark = ['next.js', 'github', 'unity', 'vercel', 'framer', 'cloudinary'].some(
                           (k) => s.name.toLowerCase().includes(k)
                         )
 
