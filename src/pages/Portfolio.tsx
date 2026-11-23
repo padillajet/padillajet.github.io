@@ -400,14 +400,9 @@ function Portfolio() {
             <h2 className="content-section-title">Experience</h2>
             <div className="experience-list">
               <article className="experience-entry">
-                <p className="experience-date">
-                  {Date.now() >= Date.parse('2026-11-25T00:00:00+08:00')
-                    ? 'NOVEMBER 2026 - PRESENT'
-                    : 'INCOMING · STARTS NOVEMBER 25, 2026'}
-                </p>
+                <p className="experience-date">NOVEMBER 2026 - PRESENT</p>
                 <h3 className="experience-entry-title">Website App Developer</h3>
                 <p className="experience-organization">Scalyn OPC | Web Design Davao</p>
-                <p className="experience-description">Contribute to website and web application development as part of the project delivery team.</p>
               </article>
               <article className="experience-entry">
                 <p className="experience-date">APRIL 2025 - JUNE 2025</p>
