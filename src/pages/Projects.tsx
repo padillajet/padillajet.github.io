@@ -164,9 +164,12 @@ function Projects() {
                     {p.tech_stack && p.tech_stack.length > 0 && (
                       <div className="plc-tech-icons">
                         <span className="plc-tech-label">STACK:</span>
-                        {p.tech_stack.map((icon, i) => (
-                          <img key={i} src={icon} alt="tech" className="plc-tech-icon" />
-                        ))}
+                        {p.tech_stack.map((icon, i) => {
+                          const techName = getTechName(icon)
+                          return (
+                            <img key={i} src={icon} alt={techName} title={techName} className={`plc-tech-icon${techName === 'Expo' ? ' tech-stack-invert-dark' : ''}`} />
+                          )
+                        })}
                       </div>
                     )}
                   </div>
@@ -274,6 +277,8 @@ function Projects() {
 }
 
 function getTechName(url: string): string {
+  if (url.includes('react-native')) return 'React Native'
+  if (url.includes('/expo.svg')) return 'Expo'
   if (url.includes('react')) return 'React'
   if (url.includes('typescript')) return 'TypeScript'
   if (url.includes('python')) return 'Python'

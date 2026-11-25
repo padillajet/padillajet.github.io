@@ -107,6 +107,7 @@ function Portfolio() {
 
   const stackCategories = [
     { title: 'Frontend', categoryKey: 'Frontend Development' },
+    { title: 'Mobile Development', categoryKey: 'Mobile Development' },
     { title: 'Backend', categoryKey: 'Backend Development' },
     { title: 'Databases & Infrastructure', categoryKey: 'Database & Infra' },
     { title: 'AI Tools & Automation', categoryKey: 'AI Tools & Automation' },
@@ -424,7 +425,7 @@ function Portfolio() {
           <section id="skills" className="content-section">
             < h2 className="content-section-title" >Tech Stack</h2>
             <p className="tech-stack-subtitle">
-              The tools, frameworks, and product patterns I use across frontend, backend, databases, cloud infrastructure, AI integrations, and design workflows.
+              The tools, frameworks, and product patterns I use across frontend, mobile, backend, databases, cloud infrastructure, AI integrations, and design workflows.
             </p>
             <div className="tech-stack-container">
               {stackCategories.map((cat) => {
@@ -440,7 +441,7 @@ function Portfolio() {
                       {catSkills.map((s) => {
                         const isChatGPT = s.name.toLowerCase() === 'chatgpt'
                         const isAntigravity = s.name.toLowerCase() === 'antigravity'
-                        const isInvertDark = ['next.js', 'github', 'unity', 'vercel', 'framer', 'cloudinary'].some(
+                        const isInvertDark = ['next.js', 'github', 'unity', 'vercel', 'framer', 'cloudinary', 'expo'].some(
                           (k) => s.name.toLowerCase().includes(k)
                         )
 
@@ -660,6 +661,8 @@ function Portfolio() {
 }
 
 function getTechName(url: string): string {
+  if (url.includes('react-native')) return 'React Native'
+  if (url.includes('/expo.svg')) return 'Expo'
   if (url.includes('react')) return 'React'
   if (url.includes('typescript')) return 'TypeScript'
   if (url.includes('python')) return 'Python'

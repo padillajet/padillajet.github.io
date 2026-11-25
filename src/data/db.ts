@@ -51,6 +51,9 @@ export interface Message {
 // PROJECTS — add / remove / edit entries here.
 // Set `pinned: true` to show a project on the homepage.
 // ─────────────────────────────────────────────────────────────────────────────
+const REACT_NATIVE_ICON = 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg?tech=react-native'
+const EXPO_ICON = 'https://cdn.jsdelivr.net/npm/simple-icons@14/icons/expo.svg'
+
 const PROJECTS: Project[] = [
   {
     id: '1',
@@ -101,7 +104,7 @@ const PROJECTS: Project[] = [
     year: '2026',
     status: 'completed',
     desc_text:
-      'A modern web application designed to help users organize, save, and manage their links, content, and resources efficiently.',
+      'A mobile app for organizing, saving, and managing links, content, and resources.',
     image_url: 'https://res.cloudinary.com/dwutjobga/image/upload/v1785811541/e6f8f9f4-590c-4004-a00a-f659e0bebfcc_sepb53.jpg',
     images: [
       'https://res.cloudinary.com/dwutjobga/image/upload/v1785825860/ed70bc62-5f1a-49c6-82cd-4ff4af61def2_oe5dwg.jpg',
@@ -112,7 +115,8 @@ const PROJECTS: Project[] = [
     pinned: true,
     position: 3,
     tech_stack: [
-      'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg',
+      REACT_NATIVE_ICON,
+      EXPO_ICON,
       'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg',
       'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg',
     ],
@@ -137,7 +141,8 @@ const PROJECTS: Project[] = [
     pinned: true,
     position: 4,
     tech_stack: [
-      'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg',
+      REACT_NATIVE_ICON,
+      EXPO_ICON,
       'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg',
     ],
   },
@@ -255,6 +260,18 @@ const SKILLS: Skill[] = [
     name: 'Figma',
     icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/figma/figma-original.svg',
     category: 'Frontend Development',
+  },
+  {
+    id: 's-react-native',
+    name: 'React Native',
+    icon: REACT_NATIVE_ICON,
+    category: 'Mobile Development',
+  },
+  {
+    id: 's-expo',
+    name: 'Expo',
+    icon: EXPO_ICON,
+    category: 'Mobile Development',
   },
   // ── Backend ──
   {
