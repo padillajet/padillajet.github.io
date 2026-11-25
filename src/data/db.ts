@@ -37,16 +37,6 @@ export interface Skill {
   created_at?: string;
 }
 
-export interface Message {
-  id: string;
-  name: string;
-  email: string;
-  content: string;
-  status: 'unread' | 'read';
-  created_at?: string;
-  date?: string;
-}
-
 // ─────────────────────────────────────────────────────────────────────────────
 // PROJECTS — add / remove / edit entries here.
 // Set `pinned: true` to show a project on the homepage.
@@ -432,12 +422,4 @@ export const db = {
     console.warn('deleteSkill: static mode — no backend available');
   },
 
-  // Messages (contact form — no-op in static mode)
-  getMessages: async (): Promise<Message[]> => [],
-  addMessage: async (_msg: Omit<Message, 'id' | 'date' | 'status'>) => {
-    console.warn('addMessage: static mode — no backend available');
-  },
-  deleteMessage: async (_id: string) => {
-    console.warn('deleteMessage: static mode — no backend available');
-  },
 };

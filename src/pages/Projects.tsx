@@ -68,6 +68,10 @@ function Projects() {
             <svg viewBox="0 0 24 24" fill="currentColor" width="15" height="15"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z" /></svg>
             Projects
           </button>
+          <a href="/?lobby=1" onClick={(e) => { e.preventDefault(); navigate('/?lobby=1') }} className="lnav-link">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="15" height="15" aria-hidden="true"><path d="M12 2 2 8v8l10 6 10-6V8l-10-6Zm0 2.3 7 4.2-7 4.2-7-4.2 7-4.2ZM4 10.3l7 4.2v4.8l-7-4.2v-4.8Zm16 4.8-7 4.2v-4.8l7-4.2v4.8Z" /></svg>
+            Jet's Office
+          </a>
           <a href="/gear" onClick={(e) => { e.preventDefault(); navigate('/gear') }} className="lnav-link">
             <svg viewBox="0 0 24 24" fill="currentColor" width="15" height="15"><path d="M12 15.5A3.5 3.5 0 0 1 8.5 12 3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5 3.5 3.5 0 0 1-3.5 3.5m7.43-2.92c.04-.34.07-.69.07-1.08s-.03-.73-.07-1.08l2.32-1.82c.21-.16.27-.46.13-.7l-2.2-3.81c-.13-.23-.43-.31-.67-.23l-2.73 1.1c-.57-.44-1.18-.8-1.86-1.07l-.42-2.9A.55.55 0 0 0 14 2h-4c-.27 0-.5.19-.54.45l-.42 2.9c-.68.27-1.3.63-1.86 1.07L4.46 5.32c-.24-.09-.54 0-.67.23L1.6 9.36c-.14.24-.08.54.13.7l2.32 1.82c-.04.35-.07.7-.07 1.08s.03.73.07 1.08L1.73 15.86c-.21.16-.27.46-.13.7l2.2 3.81c.13.23.43.31.67.23l2.73-1.1c.57.44 1.18.8 1.86 1.07l.42 2.9c.04.26.27.45.54.45h4c.27 0 .5-.19.54-.45l.42-2.9c.68-.27 1.3-.63 1.86-1.07l2.73 1.1c.24.09.54 0 .67-.23l2.2-3.81c.14-.24.08-.54-.13-.7l-2.32-1.82z" /></svg>
             Gear

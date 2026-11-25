@@ -49,5 +49,6 @@ body {
 
 html {
   scrollbar-width: thin;
+  scrollbar-gutter: stable;
   scrollbar-color: var(--border) var(--bg-1);
 }

@@ -7,10 +7,10 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "lobby:test": "node --test tests/lobby.test.mjs"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.100.0",
     "framer-motion": "^12.38.0",
     "lucide-react": "^1.6.0",
     "react": "^19.1.1",
